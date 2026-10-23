@@ -3,16 +3,30 @@
 <head>
     <title>Blocked</title>
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            // Attempt to close the tab immediately
+        // Step 1: Replace the browser history so pressing "back" won't loop you
+        window.history.replaceState(null, null, window.location.href);
+
+        // Step 2: Introduce a 250ms delay to let Fennec finalize its UI loop
+        setTimeout(() => {
+            // Step 3: Trigger the window close natively
             window.close();
             
-            // Fallback for mobile Firefox if window.close() is blocked 
-            // or if it's the last tab, redirecting to the standard homepage
+            // Step 4: Fallback for the absolute last tab on mobile
+            // We route to an internal blank data string that Firefox is forced to clean up
             setTimeout(() => {
-                window.location.replace("about:home");
+                window.location.replace("data:text/html,<html><script>window.close();<\/script></html>");
             }, 100);
-        });
+        }, 250);
+        // window.addEventListener('DOMContentLoaded', () => {
+        //     // Attempt to close the tab immediately
+        //     window.close();
+            
+        //     // Fallback for mobile Firefox if window.close() is blocked 
+        //     // or if it's the last tab, redirecting to the standard homepage
+        //     setTimeout(() => {
+        //         window.location.replace("about:home");
+        //     }, 100);
+        // });
     </script>
 </head>
 <body>
